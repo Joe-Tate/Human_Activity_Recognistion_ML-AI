@@ -1,0 +1,1 @@
+run_id,model,train_data,test_data,train_windows,test_windows,train_walking,train_walking_upstairs,train_walking_downstairs,accuracy,macro_f1,f1_walking,f1_walking_upstairs,f1_walking_downstairs,notes
