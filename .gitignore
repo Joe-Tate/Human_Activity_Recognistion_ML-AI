@@ -1,0 +1,16 @@
+# Personal data: timestamps, place names, device IDs
+data/raw/
+data/group_configuration.csv
+data/processed/group/group_combined.csv
+data/processed/group/group_build_log.csv
+
+# Not used by our models and large (UCI's ready-made 561 features, ~93 MB)
+data/processed/uci/train/X_train.txt
+data/processed/uci/test/X_test.txt
+
+# Python / Jupyter genreal clutter
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.venv/
+.DS_Store
