@@ -1,4 +1,5 @@
-#
+# Aggregates and calls the functions defined in 'features.py' to extract the features and put them in a file 
+# so this script doesnt need to be re ran each time the model is.
 
 
 import sys
@@ -78,3 +79,11 @@ def build_uci():
 # --------------------------------------------------------------------------
 # Group dataset
 # --------------------------------------------------------------------------
+
+
+
+
+
+
+if __name__ == "__main__":
+    build_uci()
