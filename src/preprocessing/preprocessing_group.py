@@ -1,0 +1,2 @@
+# This script turns the cleaned recordings into summary windows in exactly the same format as UCI’s Inertial Signals 
+# allowing the results to be directly comparable. Also everything afterwards (features, models) treats them the same as UCI.

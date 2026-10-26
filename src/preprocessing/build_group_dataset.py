@@ -1,0 +1,2 @@
+# Collating all the 150 group data folders and turning them into a single cleanly labelled table formatted like the UCI datset (g, with gravity positive), 
+# so that preprocessing_group.py can treat the recordings in the same way.
