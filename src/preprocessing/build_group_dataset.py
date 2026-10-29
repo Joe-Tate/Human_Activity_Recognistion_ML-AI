@@ -104,3 +104,31 @@ def clean_one_recording(row):
 # --------------------------------------------------------------------------
 # The main function
 # --------------------------------------------------------------------------
+
+
+def build_group_dataset():
+    # Read the config file to get the details (phone, position etc).
+    config = pd.read_csv(CONFIG_FILE, dtype=str, keep_default_na=False)
+    print(f"Cleaning {len(config)} recordings\n")
+ 
+    # Clean all recordings.
+    cleaned_recordings = []
+    for _, row in config.iterrows():
+        cleaned_recordings.append(clean_one_recording(row))
+ 
+    # Combine recordings into a table and save it.
+    combined = pd.concat(cleaned_recordings, ignore_index=True)
+    OUTPUT_FILE.parent.mkdir(parents=True, exist_ok=True)
+    combined.to_csv(OUTPUT_FILE, index=False)
+ 
+    print(f"\nTotal readings: {len(combined):,}")
+    print("\nMinutes per activity:")
+    print((combined.groupby("activity").size() / 50 / 60).round(1).to_string())
+    print("\nMinutes per participant:")
+    print((combined.groupby("participant").size() / 50 / 60).round(1).to_string())
+    print(f"\nSaved {OUTPUT_FILE.relative_to(PROJECT_ROOT)}")
+ 
+ 
+if __name__ == "__main__":
+    build_group_dataset()
+ 
