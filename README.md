@@ -5,6 +5,11 @@ Activities: walking, walking upstairs, walking downstairs (plus others from the 
 
 Device placements (group data): waist, trouser pocket and in hand.
 
+UCI dataset and methodology links: 
+
+- https://archive.ics.uci.edu/dataset/240/human+activity+recognition+using+smartphones
+
+- https://www.esann.org/sites/default/files/proceedings/legacy/es2013-84.pdf
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 How to run:
