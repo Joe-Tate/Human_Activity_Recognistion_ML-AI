@@ -77,4 +77,48 @@ def process_one_recording(recording):
 # --------------------------------------------------------------------------
 # The main function
 # --------------------------------------------------------------------------
+
+ 
+def preprocess_group():
+    print(f"Reading {INPUT_FILE.relative_to(PROJECT_ROOT)}")
+    data = pd.read_csv(INPUT_FILE)
+ 
+    all_windows = []
+    all_labels = []
+ 
+    # Goes through each recording one at a time
+    for recording_id, recording in data.groupby("recording_id"):
+        recording = recording.sort_values("seconds_elapsed") # Puts them in time order
+ 
+        if len(recording) < WINDOW_SIZE:
+            continue    # Skip recordings that are too short
+ 
+        windows = process_one_recording(recording)
+        labels = recording.iloc[0][LABEL_COLUMNS].to_dict()   # Gets the recording’s labels
+        all_windows.extend(windows)
+        all_labels.extend([labels] * len(windows))            # Add the windows and their labels to the lists
+ 
+    windows = np.array(all_windows, dtype=np.float32)
+    labels = pd.DataFrame(all_labels)
+ 
+    # Save the windows and their labels together (the same format as uci_windows.npz)
+    label_arrays = {}
+    for column in LABEL_COLUMNS:
+        label_arrays[column] = labels[column].to_numpy(dtype=str)
+    np.savez_compressed(OUTPUT_FILE, windows=windows, **label_arrays)
+ 
+    # Summary of processed data
+    print(f"\nWindows: {windows.shape}  (windows, readings, signals)")
+    total_acc_size = np.sqrt((windows[:, :, 0:3] ** 2).sum(axis=2)).mean()
+    print(f"Average total acceleration: {total_acc_size:.3f} g   (expect about 1: gravity is still in it)")
+    print(f"Average body acceleration:  {windows[:, :, 3:6].mean():.4f} g  (expect about 0: gravity removed)")
+    print("\nWindows per activity:")
+    print(labels["activity"].value_counts().to_string())
+    print("\nWindows per participant and activity:")
+    print(labels.groupby(["participant", "activity"]).size().unstack(fill_value=0).to_string())
+    print(f"\nSaved {OUTPUT_FILE.relative_to(PROJECT_ROOT)}")
+ 
+ 
+if __name__ == "__main__":
+    preprocess_group()
  
