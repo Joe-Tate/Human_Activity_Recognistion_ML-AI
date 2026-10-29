@@ -38,7 +38,43 @@ def remove_gravity(total_acc):
     # Split an acceleration signal into gravity and movement then only return the movement. Gravity changes slowly (only when the phone tilts), 
     # therefore a 0.3 Hz low-pass filter keeps only gravity as done in the UCI experiment 
     # [https://www.esann.org/sites/default/files/proceedings/legacy/es2013-84.pdf].
-    padding = min(len(total_acc) - 1, 150)          # extra padding reduces distortion at the ends
+    padding = min(len(total_acc) - 1, 150)          # Adding extra padding reduces distortion at the ends
     gravity = sosfiltfilt(GRAVITY_FILTER, total_acc, padlen=padding)
     return total_acc - gravity
+ 
+
+def cut_into_windows(signals):
+    # Cut a (readings, 9) array into windows of 128 readings, moving 64 readings each time for the 50% overlap.
+    windows = []
+    for start in range(0, len(signals) - WINDOW_SIZE + 1, WINDOW_STEP):
+        windows.append(signals[start:start + WINDOW_SIZE])
+    return windows
+ 
+ 
+def process_one_recording(recording):
+    # Filter one recording and cut it into windows.
+    acc_x = remove_noise(recording["acc_x"].to_numpy())
+    acc_y = remove_noise(recording["acc_y"].to_numpy())
+    acc_z = remove_noise(recording["acc_z"].to_numpy())
+    gyro_x = remove_noise(recording["gyro_x"].to_numpy())
+    gyro_y = remove_noise(recording["gyro_y"].to_numpy())
+    gyro_z = remove_noise(recording["gyro_z"].to_numpy())
+ 
+    body_acc_x = remove_gravity(acc_x)
+    body_acc_y = remove_gravity(acc_y)
+    body_acc_z = remove_gravity(acc_z)
+ 
+    # Put the 9 signals side by side, in UCI's order: (readings, 9)
+    nine_signals = np.column_stack([
+        acc_x, acc_y, acc_z,
+        body_acc_x, body_acc_y, body_acc_z,
+        gyro_x, gyro_y, gyro_z,
+    ])
+ 
+    return cut_into_windows(nine_signals)
+ 
+ 
+# --------------------------------------------------------------------------
+# The main function
+# --------------------------------------------------------------------------
  
