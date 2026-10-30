@@ -27,11 +27,9 @@ TRIM_SECONDS = {
     "walking_downstairs": 2.5,
 }
 
-VALID_POSITIONS = ["pocket", "waist", "hand"]
-
 PAIRING_TOLERANCE_NANOSECONDS = 15_000_000   # 15 milliseconds
 
-LABEL_COLUMNS = ["recording_id", "participant", "activity", "position", "platform"]
+LABEL_COLUMNS = ["recording_id", "participant", "activity", "position", "platform", "split"]
 SENSOR_COLUMNS = ["acc_x", "acc_y", "acc_z", "gyro_x", "gyro_y", "gyro_z"]
 
 
@@ -72,11 +70,22 @@ def pair_sensors(acc, gyro):
  
  
 def trim_ends(recording, seconds):
-
     start = recording["seconds_elapsed"].min() + seconds
     end = recording["seconds_elapsed"].max() - seconds
     keep = (recording["seconds_elapsed"] >= start) & (recording["seconds_elapsed"] <= end)
     return recording[keep]
+
+
+def choose_test_set(config):
+    # Choose which recordings go in the 70/30 test set. 30% of everyones recordings of each activity. Whole recordings are chosen, 
+    # so overlapping windows never end up on both sides. Returns "train" or "test" for each row of the config file.
+    rng = np.random.default_rng(42)
+    test_recordings = []
+    for _, group in config.groupby(["participant", "activity"]):
+        recordings = sorted(group["recording_id"])
+        number_for_test = max(1, round(len(recordings) * 0.3))
+        test_recordings.extend(rng.choice(recordings, number_for_test, replace=False))
+    return np.where(config["recording_id"].isin(test_recordings), "test", "train")
  
 
 def clean_one_recording(row):
@@ -110,6 +119,8 @@ def build_group_dataset():
     # Read the config file to get the details (phone, position etc).
     config = pd.read_csv(CONFIG_FILE, dtype=str, keep_default_na=False)
     print(f"Cleaning {len(config)} recordings\n")
+    # Choose the 70/30 split once, per recording, so every model uses the same one
+    config["split"] = choose_test_set(config)
  
     # Clean all recordings.
     cleaned_recordings = []

@@ -24,7 +24,7 @@ GROUP_WINDOWS_FILE = GROUP_FOLDER / "group_windows.npz"
 GROUP_FEATURES_FILE = GROUP_FOLDER / "group_features.csv"
 
 # The label columns every window has (the same for both datasets)
-LABEL_COLUMNS = ["activity", "participant", "position", "platform", "recording_id"]
+LABEL_COLUMNS = ["split", "activity", "participant", "position", "platform", "recording_id"]
 
 
 # --------------------------------------------------------------------------

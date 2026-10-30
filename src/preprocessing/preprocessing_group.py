@@ -21,7 +21,7 @@ WINDOW_STEP = 64      # move 64 readings each time, so windows overlap by 50% to
 NOISE_FILTER = butter(3, 20, btype="low", fs=SAMPLING_RATE, output="sos")
 GRAVITY_FILTER = butter(3, 0.3, btype="low", fs=SAMPLING_RATE, output="sos")
 
-LABEL_COLUMNS = ["activity", "participant", "position", "platform", "recording_id"]
+LABEL_COLUMNS = ["split", "activity", "participant", "position", "platform", "recording_id"]
 
 
 # --------------------------------------------------------------------------
