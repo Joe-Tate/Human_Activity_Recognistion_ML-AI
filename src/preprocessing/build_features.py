@@ -103,7 +103,6 @@ def build_group():
     print(f"  Saved {GROUP_FEATURES_FILE.relative_to(PROJECT_ROOT)}  ({len(table):,} rows)")
 
 
-
 if __name__ == "__main__":
     build_uci()
     build_group()

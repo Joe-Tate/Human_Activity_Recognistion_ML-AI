@@ -27,6 +27,7 @@ LABEL_COLUMNS = ["split", "activity", "participant", "position", "platform", "re
 # --------------------------------------------------------------------------
 # Helper functions
 # --------------------------------------------------------------------------
+
  
 def remove_noise(signal):
     # Uses a median filter, then a 20 Hz low-pass filter to remove noise from a signal.
