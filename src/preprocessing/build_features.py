@@ -81,9 +81,29 @@ def build_uci():
 # --------------------------------------------------------------------------
 
 
+def build_group():
+    print("\nGroup dataset")
 
+    # Check the prerequisite group windows have been made by preprocess_group.py
+    if not GROUP_WINDOWS_FILE.exists():
+        print(f"  Skipped: {GROUP_WINDOWS_FILE.relative_to(PROJECT_ROOT)} not found.")
+        print("  Run build_group_dataset.py and preprocess_group.py first, then run this again.")
+        return
+
+    # Load the windows and their labels
+    data = np.load(GROUP_WINDOWS_FILE)
+    windows = data["windows"]
+    labels = pd.DataFrame()
+    for column in LABEL_COLUMNS:
+        labels[column] = data[column]
+
+    # Extract the features and save them for the initial ML models
+    table = make_feature_table(windows, labels)
+    table.to_csv(GROUP_FEATURES_FILE, index=False)
+    print(f"  Saved {GROUP_FEATURES_FILE.relative_to(PROJECT_ROOT)}  ({len(table):,} rows)")
 
 
 
 if __name__ == "__main__":
     build_uci()
+    build_group()
