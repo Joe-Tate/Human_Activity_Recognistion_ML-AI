@@ -1,0 +1,4 @@
+,UCI test (new person),P02 (new person + phone),P02 leave-one-out (new person + phone + position)
+LR,0.873,0.058,0.32
+RF,0.891,0.156,0.303
+kNN,0.825,0.071,0.28
